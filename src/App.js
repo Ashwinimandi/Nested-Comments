@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import Comment from "./Components/Comment";
+import useNode from "./hooks/useNode";
+import "./styles.css";
+const comment = {
+  id: 1,
+  items: [],
+};
+const App = () => {
+  const storedComments = JSON.parse(localStorage.getItem("comments")) || [];
+  const [comments, setComments] = useState(comment);
+  const { insertNode, editNode, deleteNode, sortCommentsByDate } = useNode();
+  useEffect(() => {
+    localStorage.setItem("comments", JSON.stringify(comments));
+  }, [comments]);
 
-function App() {
+  const handleInsertNode = (folderId, name, comment) => {
+    const finalStructure = insertNode({ ...comments }, folderId, name, comment);
+    setComments(finalStructure);
+  };
+
+  const handleEditNode = (folderId, value) => {
+    const finalStructure = editNode(comments, folderId, value);
+    setComments(finalStructure);
+  };
+
+  const handleDeleteNode = (folderId) => {
+    const finalStructure = deleteNode(comments, folderId);
+    const temp = { ...finalStructure };
+    setComments(temp);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Comment
+        key={comments.length > 0 ? comments[0].id : 1}
+        handleInsertNode={handleInsertNode}
+        handleEditNode={handleEditNode}
+        handleDeleteNode={handleDeleteNode}
+        comment={comments}
+        sortCommentsByDate={sortCommentsByDate}
+      />
     </div>
   );
-}
+};
 
 export default App;

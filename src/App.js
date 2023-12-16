@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import Comment from "./Components/Comment";
 import useNode from "./hooks/useNode";
 import "./styles.css";
-const comment = {
+const comments = {
   id: 1,
   items: [],
 };
 const App = () => {
   const storedComments = JSON.parse(localStorage.getItem("comments")) || [];
-  const [comments, setComments] = useState(comment);
+  const [comments, setComments] = useState(storedComments);
   const { insertNode, editNode, deleteNode, sortCommentsByDate } = useNode();
   useEffect(() => {
     localStorage.setItem("comments", JSON.stringify(comments));
